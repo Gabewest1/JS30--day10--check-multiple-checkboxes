@@ -1,22 +1,50 @@
 (function() {
-    let checkboxes = document.querySelectorAll("input[type='checkbox']")
+    let checkboxes = Array.from(document.querySelectorAll("input[type='checkbox']"))
     let checkboxLocations = getCheckboxesLocations()
     let isShiftPressed = false
     let isAltPressed = false
     let clickedCheckbox = false
     let lastUncheckedBox = undefined
     let lastCheckedBox = undefined
+    let lastClickedCheckbox = undefined
 
     /* Setup Listeners */
-    checkboxes.forEach(checkbox => checkbox.addEventListener("mousedown", handleCheckboxMouseDown))
-    checkboxes.forEach(checkbox => checkbox.addEventListener("mouseout", handleCheckboxMouseOut))
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("mousedown", handleCheckboxMouseDown)
+        checkbox.addEventListener("mouseout", handleCheckboxMouseOut)
+        checkbox.addEventListener("click", handleCheckboxClick)
+    })
     document.addEventListener("keydown", handleKeydown)
     document.addEventListener("keyup", handleKeyup)
     document.addEventListener("mouseup", handleMouseUp)
     document.addEventListener("mousemove", handleMouseMove)
 
+    function handleCheckboxClick(e) {
+        let checkbox = e.currentTarget
+        
+        if (isShiftPressed && lastClickedCheckbox) {
+            selectRangeOfCheckboxes(checkbox, lastClickedCheckbox)
+        }
+
+        lastClickedCheckbox = checkbox        
+    }
+
+    function selectRangeOfCheckboxes(checkbox1, checkbox2) {
+        let cb1Index = checkboxes.indexOf(checkbox1)
+        let cb2Index = checkboxes.indexOf(checkbox2)
+        console.log("INDEXES", cb1Index, cb2Index)
+
+        let checkboxesToSelect = checkboxes.filter((checkbox, index) =>
+            (Math.min(cb1Index, cb2Index) < index) && (index < Math.max(cb1Index, cb2Index))
+        )
+
+        checkboxesToSelect.forEach(checkbox => 
+            checkbox.checked ? unselectCheckbox(checkbox) : selectCheckbox(checkbox)
+        )
+    }
+
     function handleMouseMove(e) {
-        if (clickedCheckbox) {
+        if (clickedCheckbox && (isShiftPressed || isAltPressed)) {
 
             let [top, left] = [e.clientY, e.clientX]
             let indexOfHoveredCheckbox = findHoveredCheckbox(top, left)
