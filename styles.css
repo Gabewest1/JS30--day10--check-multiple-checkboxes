@@ -1,16 +1,26 @@
 body {
     margin: 0;
     padding: 0;
+    background: lightgoldenrodyellow;    
 }
 .container {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: lightgoldenrodyellow;
     height: 100%;
 }
 
 input[type="checkbox"] {
     height: 30px;
     width: 30px;
+}
+
+header {
+    position: absolute;
+    top: 25%;
+    font-size: 32px;
+    color: lightgray;
+    font-family: helvetica;
+    width: 100%;
+    text-align: center;
 }
