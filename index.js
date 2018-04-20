@@ -3,20 +3,20 @@
     let checkboxLocations = getCheckboxesLocations()
     let isShiftPressed = false
     let isAltPressed = false
-    let clickedCheckbox = false
+    let isMouseDown = false
     let lastUncheckedBox = undefined
     let lastCheckedBox = undefined
     let lastClickedCheckbox = undefined
 
     /* Setup Listeners */
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("mousedown", handleCheckboxMouseDown)
-        checkbox.addEventListener("mouseout", handleCheckboxMouseOut)
         checkbox.addEventListener("click", handleCheckboxClick)
     })
     document.addEventListener("keydown", handleKeydown)
     document.addEventListener("keyup", handleKeyup)
     document.addEventListener("mouseup", handleMouseUp)
+    document.addEventListener("mousedown", handleCheckboxMouseDown)
+    document.addEventListener("mouseout", handleCheckboxMouseOut)
     document.addEventListener("mousemove", handleMouseMove)
 
     function handleCheckboxClick(e) {
@@ -44,7 +44,7 @@
     }
 
     function handleMouseMove(e) {
-        if (clickedCheckbox && (isShiftPressed || isAltPressed)) {
+        if (isMouseDown && (isShiftPressed || isAltPressed)) {
 
             let [top, left] = [e.clientY, e.clientX]
             let indexOfHoveredCheckbox = findHoveredCheckbox(top, left)
@@ -80,13 +80,13 @@
     }
 
     function handleMouseUp(e) {
-        if (clickedCheckbox === true) {
-            clickedCheckbox = false
+        if (isMouseDown === true) {
+            isMouseDown = false
         }
     }
 
     function handleCheckboxMouseDown(e) {
-        clickedCheckbox = true
+        isMouseDown = true
     }
 
     function handleCheckboxMouseOut(e) {
